@@ -1,6 +1,6 @@
 import requests
 import json
-def Ding(secret, key, content):
+def Ding(key, secret, content):
     import time
     import hmac
     import hashlib
@@ -21,8 +21,8 @@ def Ding(secret, key, content):
 
 def start():
     cookie = "__cfduid=##########; _ga=##########; _gid=##########; koa:sess=##########; koa:sess.sig=##########"
-    secret = '钉钉群机器人Webhook'
-    key = "钉钉群机器人加签KEY"
+    key = '钉钉群机器人Webhook'
+    secret = "钉钉群机器人加签secret"
     CheckIn = "https://glados.rocks/api/user/checkin"
     Status = "https://glados.rocks/api/user/status"
     origin = "https://glados.rocks"
@@ -40,7 +40,7 @@ def start():
         text = "COOKIES已失效,请更换!"
 
     try:
-        Ding(secret, key, text)
+        Ding(key, secret, text)
     except:
         print("未填写钉钉群机器人S/K, 采用本地通知")
         print(text)
