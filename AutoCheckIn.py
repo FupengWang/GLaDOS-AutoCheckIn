@@ -1,24 +1,28 @@
 import requests
 import json
-##########不需要钉钉通知请删除↓中所有代码##########
-import time
-import hmac
-import hashlib
-import base64
-import urllib.parse
-secret = '钉钉群机器人SECRET'
-key = "钉钉群机器人加签KEY"
-timestamp = str(round(time.time() * 1000))
-secret_enc = secret.encode('utf-8')
-string_to_sign = '{}\n{}'.format(timestamp, secret)
-string_to_sign_enc = string_to_sign.encode('utf-8')
-hmac_code = hmac.new(secret_enc, string_to_sign_enc, digestmod=hashlib.sha256).digest()
-sign = urllib.parse.quote_plus(base64.b64encode(hmac_code))
-DING = "https://oapi.dingtalk.com/robot/send?access_token=" + key + "&timestamp=" + timestamp + "&sign=" + sign
-##########不需要钉钉通知请删除↑中所有代码##########
+def Ding(secret, key, content):
+    import time
+    import hmac
+    import hashlib
+    import base64
+    import urllib.parse
+    timestamp = str(round(time.time() * 1000))
+    secret_enc = secret.encode('utf-8')
+    string_to_sign = '{}\n{}'.format(timestamp, secret)
+    string_to_sign_enc = string_to_sign.encode('utf-8')
+    hmac_code = hmac.new(secret_enc, string_to_sign_enc, digestmod=hashlib.sha256).digest()
+    sign = urllib.parse.quote_plus(base64.b64encode(hmac_code))
+    url = "https://oapi.dingtalk.com/robot/send?access_token=" + key + "&timestamp=" + timestamp + "&sign=" + sign
+    head = {'Content-Type': 'application/json'}
+    r.encoding = 'utf-8'
+    tmp = "{\"msgtype\": \"text\", \"text\": {\"content\": \"" + content + "\"}}"
+    r.post(url, data=json.dumps(eval(tmp)), headers=head)
+
+
 def start():
-    #填入COOKIE
     cookie = "__cfduid=##########; _ga=##########; _gid=##########; koa:sess=##########; koa:sess.sig=##########"
+    secret = '钉钉群机器人Webhook'
+    key = "钉钉群机器人加签KEY"
     CheckIn = "https://glados.rocks/api/user/checkin"
     Status = "https://glados.rocks/api/user/status"
     origin = "https://glados.rocks"
@@ -34,14 +38,12 @@ def start():
         text = str("剩余: "+state.json()['data']['leftDays'].split('.')[0]+"天...服务器返回了: "+checkin.json()['message'])
     else:
         text = "COOKIES已失效,请更换!"
-    #本地输出请清除下面一行代码的注释
-    #print(text)
-    ##########不需要钉钉通知请删除↓中所有代码##########
-    requests.encoding = "utf-8"
-    head = {'Content-Type': 'application/json'}
-    tmp = "{\"msgtype\": \"text\", \"text\": {\"content\": \"" + text + "\"}}"
-    requests.post(DING, data=json.dumps(eval(tmp)), headers=head)
-    ##########不需要钉钉通知请删除↑中所有代码##########
+
+    try:
+        Ding(secret, key, text)
+    except:
+        print("未填写钉钉群机器人S/K, 采用本地通知")
+        print(text)
 if __name__ == '__main__':
     start()
 
