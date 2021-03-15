@@ -14,9 +14,9 @@ def Ding(key, secret, content):
     sign = urllib.parse.quote_plus(base64.b64encode(hmac_code))
     url = "https://oapi.dingtalk.com/robot/send?access_token=" + key + "&timestamp=" + timestamp + "&sign=" + sign
     head = {'Content-Type': 'application/json'}
-    r.encoding = 'utf-8'
+    requests.encoding = 'utf-8'
     tmp = "{\"msgtype\": \"text\", \"text\": {\"content\": \"" + content + "\"}}"
-    r.post(url, data=json.dumps(eval(tmp)), headers=head)
+    requests.post(url, data=json.dumps(eval(tmp)), headers=head)
 
 
 def start():
